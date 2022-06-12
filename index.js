@@ -1,6 +1,7 @@
 // js framework-1.express,2.koa,3.sails,4.metor,5.hapi
 // 3 rd party imported
 import express from "express";
+import { moviesRouter } from "./routes/movies.js";
 
 import dotenv from "dotenv";
 
@@ -23,66 +24,13 @@ async function createConnection(){
      return client;
     }
     // Top level await
-const client=await createConnection();
+ export const client=await createConnection();
 //  /-home
 app.get('/', function (req, res) {
   res.send('Hello World 🎉');
 });
-// /movies
-// we use nodemon its automatically restart the server
-// Cursor->pagination
-// toArray()->Cursor->Array
 
-app.get("/movies", async function (req, res) {
-    // db.movies.find({})
-    const movies=await client.db("b33wd").collection("movies").find({}).toArray() ;
-    res.send(movies);
-   });
-
-  app.get("/movies/:id",async  function (req, res) {
-    console.log(req.params);
-    const {id}=req.params;
-    // db.movies.findOne({id:id})
-    const movie=await client.db("b33wd").collection("movies").findOne({id:id})
+app.use("/movies",moviesRouter);
 
 
-//     const movie=movies.find((mv)=>mv.id===id);
- movie   
- ? res.send(movie)
- :res.status(404).send({msg:"No msuch movie found"});
- 
-});
-// express.json()->intercept->converting to json
-// Inbuilt middleware
-app.post("/movies",async function(req,res){
-    const data=req.body;
-    console.log(data);
-    //   db.movies.insertMany(data)
-const result=await client.db("b33wd").collection("movies").insertMany(data)
-  res.send(result) ; 
-});
-
-
-app.delete("/movies/:id",async  function (req, res) {
-    console.log(req.params);
-    const {id}=req.params;
-    // db.movies.deleteOne({id:id})
-    const movie=await client.db("b33wd").collection("movies").deleteOne({id:id})
-
-
-//     const movie=movies.find((mv)=>mv.id===id);
- movie.deleteCount>0  
- ? res.send(movie)
- :res.status(404).send({msg:"No msuch movie found"});
- 
-});
-
-app.put("/movies/:id",async function(req,res){
-    const data=req.body;
-    console.log(data);
-    const {id}=req.params;
-//   db.movies.updateOne({id:id},{$set:data})
-const result=await client.db("b33wd").collection("movies").updateOne({id},{$set:data});
-  res.send(result) ; 
-});
 app.listen(PORT,()=>console.log(`App started in ${PORT}`));
