@@ -11,7 +11,7 @@ dotenv.config();
 const app = express();
 // rest api methods-crud
 // /-api path
-const PORT=4000;
+const PORT=process.env.PORT;
 
 app.use(express.json());
 //  const MONGO_URL="mongodb://localhost";
@@ -59,6 +59,30 @@ app.post("/movies",async function(req,res){
     console.log(data);
     //   db.movies.insertMany(data)
 const result=await client.db("b33wd").collection("movies").insertMany(data)
+  res.send(result) ; 
+});
+
+
+app.delete("/movies/:id",async  function (req, res) {
+    console.log(req.params);
+    const {id}=req.params;
+    // db.movies.deleteOne({id:id})
+    const movie=await client.db("b33wd").collection("movies").deleteOne({id:id})
+
+
+//     const movie=movies.find((mv)=>mv.id===id);
+ movie.deleteCount>0  
+ ? res.send(movie)
+ :res.status(404).send({msg:"No msuch movie found"});
+ 
+});
+
+app.put("/movies/:id",async function(req,res){
+    const data=req.body;
+    console.log(data);
+    const {id}=req.params;
+//   db.movies.updateOne({id:id},{$set:data})
+const result=await client.db("b33wd").collection("movies").updateOne({id},{$set:data});
   res.send(result) ; 
 });
 app.listen(PORT,()=>console.log(`App started in ${PORT}`));
