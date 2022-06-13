@@ -4,10 +4,6 @@ import express from "express";
 
 import dotenv from "dotenv";
 
-import { MongoClient } from "mongodb";
-
-import cors from "cors";
-
 import { moviesRouter } from "./routes/movies.js";
 dotenv.config();
 
